@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
+import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -15,18 +16,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Template-NEXT",
-  description:
-    "A reusable Next.js starter with TypeScript, Tailwind CSS, React Compiler, Turbopack, shadcn/ui preset b1YmqvjRA, and next-themes.",
+  title: APP_NAME,
+  description: APP_DESCRIPTION,
   keywords: [
+    "CineSeat Planner",
     "Next.js",
     "TypeScript",
-    "Tailwind CSS",
+    "MongoDB",
     "shadcn/ui",
-    "next-themes",
-    "Template",
+    "Seat Allocation",
   ],
-  authors: [{ name: "Thilina R. (Edward Hyde)", url: "https://thilina.dev" }],
+  authors: [{ name: "Thilina Rathnayaka" }],
 };
 
 export default function RootLayout({
