@@ -31,12 +31,15 @@ export interface CreateHeldBookingRequest {
 }
 
 export interface EditHeldBookingRequest {
-  bookingId: string;
   groupSize: number;
 }
 
 export interface BookingResponse {
   booking: Booking;
+}
+
+export interface ExpireHeldBookingsResponse {
+  expiredCount: number;
 }
 
 export interface ApiHealthResponse {
