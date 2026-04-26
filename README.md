@@ -35,7 +35,13 @@ npm install
 npm run dev
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+3. Seed the demo screen data:
+
+```bash
+npm run seed:screens
+```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 
@@ -81,6 +87,7 @@ npx shadcn@latest add input
 - `npm run lint` - Lint code with ESLint
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check formatting without writing changes
+- `npm run seed:screens` - Seed the demo cinema screens from `src/seed/screens.ts`
 
 ## Contributing
 

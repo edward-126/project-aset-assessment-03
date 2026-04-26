@@ -75,6 +75,7 @@ export class BookingService {
 
   async createHeldBooking(input: CreateHeldBookingInput) {
     validateCreateHeldBookingInput(input);
+    await this.holdService.expireHeldBookings();
 
     const screen = await this.screens.findScreenWithSeats(input.screenId);
 

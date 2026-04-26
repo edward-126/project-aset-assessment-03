@@ -5,10 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 
-const geistSans = Geist({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistMono = Geist_Mono({
   variable: "--font-mono",
@@ -35,12 +32,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(geistMono.variable, geist.variable)}
+    >
       <body
         className={cn(
-          "bg-background text-foreground relative h-full font-sans antialiased",
-          geistSans.variable,
-          geistMono.variable
+          "bg-background text-foreground relative h-full font-sans antialiased"
         )}
       >
         <main className="relative flex min-h-screen flex-col">

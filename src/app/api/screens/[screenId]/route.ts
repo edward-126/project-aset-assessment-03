@@ -1,4 +1,5 @@
 import { handleApiError, jsonError } from "@/lib/api/route-helpers";
+import { holdService } from "@/lib/booking/hold-service";
 import { screenRepository } from "@/lib/repositories/screen-repository";
 import type { ScreenResponse } from "@/types/api";
 
@@ -13,6 +14,7 @@ type ScreenRouteContext = {
 export async function GET(_request: Request, context: ScreenRouteContext) {
   try {
     const { screenId } = await context.params;
+    await holdService.expireHeldBookings();
     const screen = await screenRepository.findById(screenId);
 
     if (!screen) {

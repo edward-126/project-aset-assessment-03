@@ -1,9 +1,11 @@
-import { model, models, Schema, type Model } from "mongoose";
+import mongoose, { type Model } from "mongoose";
 import {
   SEAT_STATUS_VALUES,
   SEAT_TYPE_VALUES,
   type Screen,
 } from "@/types/domain";
+
+const { model, models, Schema } = mongoose;
 
 export type ScreenDocument = Omit<Screen, "createdAt" | "updatedAt"> & {
   createdAt: Date;

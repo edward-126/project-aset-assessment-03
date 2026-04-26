@@ -1,4 +1,5 @@
 import { handleApiError } from "@/lib/api/route-helpers";
+import { holdService } from "@/lib/booking/hold-service";
 import { screenRepository } from "@/lib/repositories/screen-repository";
 import type { ScreenSummary, ScreensResponse } from "@/types/api";
 import type { Screen } from "@/types/domain";
@@ -19,6 +20,7 @@ function toScreenSummary(screen: Screen): ScreenSummary {
 
 export async function GET() {
   try {
+    await holdService.expireHeldBookings();
     const screens = await screenRepository.findAll();
     const response: ScreensResponse = {
       screens: screens.map(toScreenSummary),

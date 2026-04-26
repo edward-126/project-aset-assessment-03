@@ -1,4 +1,5 @@
 import { handleApiError, jsonError } from "@/lib/api/route-helpers";
+import { holdService } from "@/lib/booking/hold-service";
 import { bookingRepository } from "@/lib/repositories/booking-repository";
 import type { BookingResponse } from "@/types/api";
 
@@ -13,6 +14,7 @@ type BookingRouteContext = {
 export async function GET(_request: Request, context: BookingRouteContext) {
   try {
     const { bookingId } = await context.params;
+    await holdService.expireHeldBookings();
     const booking = await bookingRepository.findById(bookingId);
 
     if (!booking) {
