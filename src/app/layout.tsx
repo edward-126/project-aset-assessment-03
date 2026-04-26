@@ -45,8 +45,7 @@ export default function RootLayout({
         <main className="relative flex min-h-screen flex-col">
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="light"
             disableTransitionOnChange
           >
             <div className="flex-1 grow">{children}</div>
