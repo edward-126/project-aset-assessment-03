@@ -52,6 +52,7 @@ export function ScreenList() {
       <div className="grid gap-4 md:grid-cols-2">
         <Skeleton className="h-48 rounded-xl" />
         <Skeleton className="h-48 rounded-xl" />
+        <Skeleton className="h-48 rounded-xl" />
       </div>
     );
   }

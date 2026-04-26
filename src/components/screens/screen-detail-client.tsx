@@ -87,9 +87,15 @@ export function ScreenDetailClient({ screenId }: { screenId: string }) {
 
   if (isLoading && !screen) {
     return (
-      <div className="flex flex-col gap-6">
-        <Skeleton className="h-12 w-72 rounded-xl" />
-        <Skeleton className="h-96 rounded-xl" />
+      <div className="gap-4.5 flex flex-col">
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="md:w-100 h-8" />
+        <Skeleton className="h-3.5 w-60" />
+
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          <Skeleton className="h-96" />
+          <Skeleton className="h-96" />
+        </div>
       </div>
     );
   }
