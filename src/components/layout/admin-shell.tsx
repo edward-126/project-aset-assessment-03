@@ -20,7 +20,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   return (
     <AppShell>
       <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <aside className="border-border h-fit rounded-lg border px-1.5 py-2.5">
+        <aside className="border-border h-fit rounded-lg border p-1.5">
           <nav className="flex flex-col gap-1">
             {adminLinks.map((link) => {
               const isActive = pathname === link.href;

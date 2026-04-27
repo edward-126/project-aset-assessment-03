@@ -27,7 +27,7 @@ export function DashboardCards({
   return (
     <div className="grid gap-4 md:grid-cols-3">
       {cards.map((card) => (
-        <Card key={card.label}>
+        <Card key={card.label} className="gap-1.5">
           <CardHeader>
             <CardTitle className="text-sm font-medium">{card.label}</CardTitle>
           </CardHeader>
@@ -36,7 +36,7 @@ export function DashboardCards({
           </CardContent>
         </Card>
       ))}
-      <Card className="md:col-span-3">
+      <Card className="bg-primary text-primary-foreground gap-2 md:col-span-3">
         <CardHeader>
           <CardTitle className="text-sm font-medium">
             Confirmed revenue
@@ -44,8 +44,8 @@ export function DashboardCards({
         </CardHeader>
         <CardContent>
           <Badge
-            variant={"secondary"}
-            className="py-4! rounded-md font-mono text-xl"
+            variant={"default"}
+            className="py-4! bg-card/15 rounded-md font-mono text-xl"
           >
             {formatCurrency(summary.confirmedRevenue)}
           </Badge>

@@ -13,9 +13,7 @@ async function main() {
 
   const movieIds = seedMovies.map((movie) => movie.id);
 
-  await MovieModel.deleteMany({
-    id: { $in: movieIds },
-  });
+  await MovieModel.deleteMany({});
 
   await MovieModel.insertMany(seedMovies, {
     ordered: true,

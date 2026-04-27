@@ -1,4 +1,8 @@
 import { redirect } from "next/navigation";
+import {
+  AdminDataError,
+  getAdminDataErrorMessage,
+} from "@/components/admin/admin-data-error";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +24,22 @@ export default async function AdminMoviesPage() {
     redirect("/admin/login");
   }
 
-  const movies = await movieRepository.findAll();
+  let movies;
+
+  try {
+    movies = await movieRepository.findAll();
+  } catch (error) {
+    console.error(
+      "[admin] Failed to load movies:",
+      getAdminDataErrorMessage(error)
+    );
+
+    return (
+      <AdminShell>
+        <AdminDataError error={error} />
+      </AdminShell>
+    );
+  }
 
   return (
     <AdminShell>

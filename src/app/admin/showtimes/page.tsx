@@ -1,4 +1,8 @@
 import { redirect } from "next/navigation";
+import {
+  AdminDataError,
+  getAdminDataErrorMessage,
+} from "@/components/admin/admin-data-error";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { formatDateTime } from "@/components/booking/format";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +25,22 @@ export default async function AdminShowtimesPage() {
     redirect("/admin/login");
   }
 
-  const showtimes = await showtimeRepository.findAll();
+  let showtimes;
+
+  try {
+    showtimes = await showtimeRepository.findAll();
+  } catch (error) {
+    console.error(
+      "[admin] Failed to load showtimes:",
+      getAdminDataErrorMessage(error)
+    );
+
+    return (
+      <AdminShell>
+        <AdminDataError error={error} />
+      </AdminShell>
+    );
+  }
 
   return (
     <AdminShell>

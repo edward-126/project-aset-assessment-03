@@ -10,7 +10,7 @@ try {
   const result = await seedApplicationData();
 
   console.log(
-    `Seeded ${result.insertedMovies} movies, ${result.insertedScreens} screens, and ${result.insertedShowtimes} showtimes.`
+    `Seeded ${result.insertedMovies} movies, ${result.insertedScreens} screens, ${result.insertedShowtimes} showtimes, and ${result.insertedBookings} bookings.`
   );
 } catch (error) {
   console.error("Failed to seed TR SeatFlow data.");

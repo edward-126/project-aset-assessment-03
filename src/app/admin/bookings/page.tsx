@@ -1,4 +1,8 @@
 import { redirect } from "next/navigation";
+import {
+  AdminDataError,
+  getAdminDataErrorMessage,
+} from "@/components/admin/admin-data-error";
 import { AdminShell } from "@/components/layout/admin-shell";
 import {
   formatCurrency,
@@ -46,10 +50,26 @@ export default async function AdminBookingsPage({
   }
 
   const filters = await searchParams;
-  const [bookings, showtimes] = await Promise.all([
-    bookingRepository.findAll(filters),
-    showtimeRepository.findAll(),
-  ]);
+  let bookings;
+  let showtimes;
+
+  try {
+    [bookings, showtimes] = await Promise.all([
+      bookingRepository.findAll(filters),
+      showtimeRepository.findAll(),
+    ]);
+  } catch (error) {
+    console.error(
+      "[admin] Failed to load bookings:",
+      getAdminDataErrorMessage(error)
+    );
+
+    return (
+      <AdminShell>
+        <AdminDataError error={error} />
+      </AdminShell>
+    );
+  }
   const showtimeMovieTitles = new Map(
     showtimes.map((showtime) => [showtime.id, showtime.movie.title])
   );

@@ -15,10 +15,10 @@ export default async function Home() {
     <AppShell>
       <div className="flex flex-col gap-10">
         <section
-          className="relative overflow-hidden rounded-lg bg-cover bg-center px-6 py-14 text-white md:px-10"
+          className="relative overflow-hidden rounded-lg bg-cover bg-center px-6 py-24 text-white md:px-10"
           style={{
             backgroundImage:
-              "linear-gradient(90deg, rgba(0,0,0,.78), rgba(0,0,0,.38)), url(https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80)",
+              "linear-gradient(90deg, rgba(0,0,0,.78), rgba(0,0,0,.38)), url(https://images.unsplash.com/photo-1607376995899-383532a918b3?auto=format&fit=crop&w=1600&q=80)",
           }}
         >
           <div className="flex max-w-2xl flex-col gap-6">
@@ -71,10 +71,10 @@ export default async function Home() {
             },
           ].map((item) => (
             <Card key={item.title}>
-              <CardContent className="flex flex-col gap-3 pt-6">
+              <CardContent>
                 <item.icon aria-hidden="true" />
 
-                <div className="flex flex-col gap-1">
+                <div className="mt-2.5 flex flex-col gap-1.5">
                   <h2 className="font-semibold">{item.title}</h2>
                   <p className="text-muted-foreground text-sm">{item.text}</p>
                 </div>

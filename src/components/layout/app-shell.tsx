@@ -2,7 +2,7 @@
 
 import { APP_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
-import { Clapperboard } from "lucide-react";
+import { ArrowUpRight, Clapperboard, ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,7 +17,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="bg-background min-h-dvh">
-      <header className="bg-background/75 supports-backdrop-filter:bg-background/75 sticky top-0 z-50 border-b backdrop-blur">
+      <header className="bg-background/90 supports-backdrop-filter:bg-background/90 sticky top-0 z-50 border-b backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 md:px-6">
           <Link href="/" className="flex min-w-0 items-center gap-2">
             <span className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-lg">
@@ -63,6 +63,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <main className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6">
         {children}
       </main>
+
+      <footer className="text-muted-foreground text-xs">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 md:px-6">
+          <div className="group/copyright">
+            Designed and Developed by{" "}
+            <Link
+              href="https://thilina.dev/"
+              className="text-primary inline-flex items-center gap-0.5 transition-all duration-300 ease-in-out group-hover/copyright:font-medium"
+              target="_blank"
+            >
+              Thilina R. <ExternalLinkIcon className="-mt-px size-3" />
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

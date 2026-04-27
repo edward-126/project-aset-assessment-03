@@ -1,4 +1,8 @@
 import { redirect } from "next/navigation";
+import {
+  AdminDataError,
+  getAdminDataErrorMessage,
+} from "@/components/admin/admin-data-error";
 import { DashboardCards } from "@/components/admin/dashboard-cards";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { adminSummaryService } from "@/lib/admin/admin-summary-service";
@@ -11,7 +15,22 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  const summary = await adminSummaryService.getSummary();
+  let summary;
+
+  try {
+    summary = await adminSummaryService.getSummary();
+  } catch (error) {
+    console.error(
+      "[admin] Failed to load dashboard data:",
+      getAdminDataErrorMessage(error)
+    );
+
+    return (
+      <AdminShell>
+        <AdminDataError error={error} />
+      </AdminShell>
+    );
+  }
 
   return (
     <AdminShell>

@@ -35,7 +35,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn(geistMono.variable, geist.variable)}
+      className={cn(geistMono.variable, "font-sans", geist.variable)}
     >
       <body
         className={cn(

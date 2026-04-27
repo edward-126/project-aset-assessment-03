@@ -1,10 +1,12 @@
-import { model, models, Schema, type Model } from "mongoose";
+import mongoose, { type Model } from "mongoose";
 import {
   ALLOCATION_MODE_VALUES,
   BOOKING_STATUS_VALUES,
   SEAT_TYPE_VALUES,
   type Booking,
 } from "@/types/domain";
+
+const { model, models, Schema } = mongoose;
 
 export type BookingDocument = Omit<Booking, "createdAt" | "updatedAt"> & {
   createdAt: Date;

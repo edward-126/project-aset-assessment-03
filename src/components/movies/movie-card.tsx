@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Clock, Film } from "lucide-react";
+import { ArrowRight, Clock, Film } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,15 +16,15 @@ import type { Movie } from "@/types/domain";
 
 export function MovieCard({ movie }: { movie: Movie }) {
   return (
-    <Card className="overflow-hidden pt-0">
+    <Card className="group/card border-border/60 hover:border-primary/30 group h-fit overflow-hidden pt-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       {movie.posterUrl ? (
         <div className="aspect-4/3 relative overflow-hidden">
           <Image
             src={movie.posterUrl}
             alt=""
             fill
-            sizes="(min-width: 768px) 33vw, 100vw"
-            className="object-cover"
+            sizes="(min-width: 780px) 33vw, 100vw"
+            className="object-cover transition-all duration-300 ease-in-out group-hover/card:grayscale"
           />
         </div>
       ) : null}
@@ -50,8 +50,11 @@ export function MovieCard({ movie }: { movie: Movie }) {
         </Badge>
       </CardContent>
       <CardFooter>
-        <Button asChild className="w-full">
-          <Link href="/showtimes">View showtimes</Link>
+        <Button asChild className="">
+          <Link href="/showtimes">
+            View showtimes
+            <ArrowRight className="" />
+          </Link>
         </Button>
       </CardFooter>
     </Card>
