@@ -1,6 +1,7 @@
+import { ArrowRight, CalendarClock, Monitor } from "lucide-react";
 import Link from "next/link";
-import { ArrowRight, CalendarClock, Clapperboard, Monitor } from "lucide-react";
 
+import { formatDateTime } from "@/components/booking/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatDateTime } from "@/components/booking/format";
 import type { ShowtimeWithDetails } from "@/types/domain";
 
 export function ShowtimeCard({ showtime }: { showtime: ShowtimeWithDetails }) {

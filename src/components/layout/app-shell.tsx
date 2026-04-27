@@ -1,8 +1,8 @@
 "use client";
 
-import { APP_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Clapperboard, ExternalLinkIcon } from "lucide-react";
+import { APP_NAME } from "@/lib/constants";
+import { Clapperboard, ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
