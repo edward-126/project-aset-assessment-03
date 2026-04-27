@@ -43,32 +43,58 @@ export function BookingSummary({
           </Badge>
         </CardAction>
       </CardHeader>
+
       <CardContent>
         <dl className="grid gap-3 text-sm sm:grid-cols-2">
           <div className="flex flex-col gap-1">
             <dt className="text-muted-foreground">Customer</dt>
             <dd className="font-medium">{booking.customerName}</dd>
           </div>
+
           <div className="flex flex-col gap-1">
-            <dt className="text-muted-foreground">Screen</dt>
-            <dd className="font-medium">{screenName ?? booking.screenId}</dd>
+            <dt className="text-muted-foreground">Session</dt>
+            <dd className="font-medium">
+              {booking.movieTitle
+                ? `${screenName ?? booking.screenId}`
+                : (screenName ?? booking.screenId)}
+            </dd>
           </div>
+
+          {booking.showtimeStartsAt ? (
+            <div className="flex flex-col gap-1">
+              <dt className="text-muted-foreground">Showtime</dt>
+              <dd>{formatDateTime(booking.showtimeStartsAt)}</dd>
+            </div>
+          ) : null}
+
           <div className="flex flex-col gap-1">
             <dt className="text-muted-foreground">Seats</dt>
             <dd className="font-mono">{formatSeats(booking.seats)}</dd>
           </div>
+
           <div className="flex flex-col gap-1">
             <dt className="text-muted-foreground">Total</dt>
             <dd className="font-mono font-medium">
               {formatCurrency(booking.totalCost)}
             </dd>
           </div>
-          <div className="flex flex-col gap-1 sm:col-span-2">
-            <dt className="text-muted-foreground">Hold expires</dt>
-            <dd>{formatDateTime(booking.holdExpiresAt)}</dd>
-          </div>
+
+          {booking.status === "HELD" && booking.holdExpiresAt ? (
+            <div className="flex flex-col gap-1 sm:col-span-2">
+              <dt className="text-muted-foreground">Hold expires</dt>
+              <dd>{formatDateTime(booking.holdExpiresAt)}</dd>
+            </div>
+          ) : null}
+
+          {booking.status === "CONFIRMED" ? (
+            <div className="flex flex-col gap-1 sm:col-span-2">
+              <dt className="text-muted-foreground">Booking status</dt>
+              <dd>Your booking is confirmed.</dd>
+            </div>
+          ) : null}
         </dl>
       </CardContent>
+
       {showReviewLink ? (
         <CardFooter className="justify-end">
           <Button asChild>

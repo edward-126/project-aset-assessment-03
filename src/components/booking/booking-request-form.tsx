@@ -19,13 +19,19 @@ import type { Booking } from "@/types/domain";
 
 export function BookingRequestForm({
   screenId,
+  showtimeId,
   maxSeats,
   activeBooking,
+  allocationMode = "AUTO",
+  selectedSeatIds = [],
   onBookingCreated,
 }: {
-  screenId: string;
+  screenId?: string;
+  showtimeId?: string;
   maxSeats: number;
   activeBooking?: Booking | null;
+  allocationMode?: "AUTO" | "MANUAL";
+  selectedSeatIds?: string[];
   onBookingCreated: (booking: Booking) => void;
 }) {
   const router = useRouter();
@@ -60,17 +66,25 @@ export function BookingRequestForm({
     const formData = new FormData(form);
     const payload: CreateHeldBookingRequest = {
       screenId,
+      showtimeId,
       customerName: String(formData.get("customerName") ?? ""),
       customerEmail: String(formData.get("customerEmail") ?? ""),
       customerPhone: String(formData.get("customerPhone") ?? "") || undefined,
       groupSize: Number(formData.get("groupSize") ?? 0),
+      allocationMode,
+      seatIds: allocationMode === "MANUAL" ? selectedSeatIds : undefined,
     };
 
     try {
-      const response = await fetchJson<BookingResponse>("/api/bookings", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+      const response = await fetchJson<BookingResponse>(
+        allocationMode === "MANUAL"
+          ? "/api/bookings/manual-selection"
+          : "/api/bookings",
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+        }
+      );
 
       onBookingCreated(response.booking);
       form.reset();
@@ -110,6 +124,17 @@ export function BookingRequestForm({
       ) : null}
 
       <FieldGroup>
+        {allocationMode === "MANUAL" ? (
+          <Field>
+            <FieldLabel>Selected seats</FieldLabel>
+            <FieldDescription>
+              {selectedSeatIds.length > 0
+                ? `${selectedSeatIds.length} selected on the seat map.`
+                : "Select seats on the seat map before submitting."}
+            </FieldDescription>
+          </Field>
+        ) : null}
+
         <Field>
           <FieldLabel htmlFor="customerName">Customer name</FieldLabel>
           <Input

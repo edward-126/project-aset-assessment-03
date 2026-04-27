@@ -5,14 +5,18 @@ import type {
   PricingSummary,
   Screen,
   SeatStateUpdate,
+  ShowtimeSeatMap,
 } from "@/types/domain";
 
 export interface CreateHeldBookingInput {
-  screenId: string;
+  screenId?: string;
+  showtimeId?: string;
   groupSize: number;
   customerName: string;
   customerEmail: string;
   customerPhone?: string;
+  allocationMode?: "AUTO" | "MANUAL";
+  seatIds?: string[];
 }
 
 export interface EditHeldBookingInput {
@@ -31,6 +35,15 @@ export interface ScreenRepositoryPort {
   findScreenWithSeats(screenId: string): Promise<Screen | null>;
   updateSeatStates(
     screenId: string,
+    seatIds: string[],
+    updater: SeatStateUpdate
+  ): Promise<void>;
+}
+
+export interface ShowtimeRepositoryPort {
+  findShowtimeWithSeatMap(showtimeId: string): Promise<ShowtimeSeatMap | null>;
+  updateSeatStates(
+    showtimeId: string,
     seatIds: string[],
     updater: SeatStateUpdate
   ): Promise<void>;
