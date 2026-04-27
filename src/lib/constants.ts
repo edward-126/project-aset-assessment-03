@@ -1,7 +1,7 @@
-export const APP_NAME = "CineSeat Planner";
+export const APP_NAME = "TR SeatFlow";
 
 export const APP_DESCRIPTION =
-  "A plan-driven cinema seat allocation system focused on deterministic booking, hold, and confirmation flows.";
+  "A cinema booking system focused on deterministic seat allocation, holds, and booking lifecycle flows.";
 
 export const HOLD_DURATION_MINUTES = 5;
 
