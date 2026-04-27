@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import {
   AdminDataError,
@@ -7,6 +8,16 @@ import { DashboardCards } from "@/components/admin/dashboard-cards";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { adminSummaryService } from "@/lib/admin/admin-summary-service";
 import { hasAdminSession } from "@/lib/admin/session";
+import { APP_URL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Admin Dashboard",
+  description:
+    "Cinema administration panel. Manage bookings, showtimes, screens, and movies.",
+  alternates: {
+    canonical: `${APP_URL}/admin`,
+  },
+};
 
 export const dynamic = "force-dynamic";
 

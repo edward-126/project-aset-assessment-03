@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/app-shell";
 import { ScreenList } from "@/components/screens/screen-list";
+import { APP_URL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Screens",
+  description:
+    "View all cinema screens and their seating capacity. Start a booking.",
+  alternates: {
+    canonical: `${APP_URL}/screens`,
+  },
+};
 
 export const dynamic = "force-dynamic";
 

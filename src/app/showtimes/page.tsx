@@ -1,6 +1,17 @@
+import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/app-shell";
 import { ShowtimeCard } from "@/components/showtimes/showtime-card";
 import { showtimeRepository } from "@/lib/repositories/showtime-repository";
+import { APP_URL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Showtimes",
+  description:
+    "Browse available cinema showtimes. Select a session to book seats.",
+  alternates: {
+    canonical: `${APP_URL}/showtimes`,
+  },
+};
 
 export const dynamic = "force-dynamic";
 

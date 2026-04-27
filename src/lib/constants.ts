@@ -1,7 +1,17 @@
 export const APP_NAME = "TR SeatFlow";
 
 export const APP_DESCRIPTION =
-  "A cinema booking system focused on deterministic seat allocation, holds, and booking lifecycle flows.";
+  "A plan-driven cinema seat booking system that demonstrates deterministic seat allocation, temporary holds, booking confirmation, cancellation, and booking lifecycle management.";
+
+export const APP_SHORT_DESCRIPTION =
+  "Deterministic cinema seat allocation and booking lifecycle system.";
+
+export const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  "https://project-aset-assessment-03.vercel.app";
+
+export const APP_AUTHOR = "Thilina Rathnayaka";
+export const APP_AUTHOR_URL = "https://thilina.dev";
 
 export const HOLD_DURATION_MINUTES = 5;
 

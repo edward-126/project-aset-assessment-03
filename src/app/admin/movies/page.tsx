@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import {
   AdminDataError,
@@ -16,6 +17,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { APP_URL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Manage Movies",
+  description:
+    "Administer cinema movies. Add, edit, or remove movies from the system.",
+  alternates: {
+    canonical: `${APP_URL}/admin/movies`,
+  },
+};
 
 export const dynamic = "force-dynamic";
 

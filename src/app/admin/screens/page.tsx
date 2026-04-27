@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import {
   AdminDataError,
@@ -16,6 +17,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { APP_URL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Manage Screens",
+  description:
+    "Administer cinema screens. Add, edit, or remove screens from the system.",
+  alternates: {
+    canonical: `${APP_URL}/admin/screens`,
+  },
+};
 
 export const dynamic = "force-dynamic";
 

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { AppShell } from "@/components/layout/app-shell";
@@ -9,6 +10,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { hasAdminSession } from "@/lib/admin/session";
+import { APP_URL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Admin Login",
+  description: "Sign in to the cinema administration panel.",
+  alternates: {
+    canonical: `${APP_URL}/admin/login`,
+  },
+};
 
 export const dynamic = "force-dynamic";
 

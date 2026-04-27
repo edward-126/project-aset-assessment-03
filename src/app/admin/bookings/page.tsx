@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import {
   AdminDataError,
@@ -23,6 +24,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { APP_URL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Manage Bookings",
+  description:
+    "Administer cinema bookings. View, confirm, or cancel customer bookings.",
+  alternates: {
+    canonical: `${APP_URL}/admin/bookings`,
+  },
+};
 
 export const dynamic = "force-dynamic";
 
@@ -83,16 +94,16 @@ export default async function AdminBookingsPage({
 
         <CardContent>
           <div className="min-w-0 overflow-x-auto">
-            <Table className="min-w-[1100px] table-fixed">
+            <Table className="min-w-275 table-fixed">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[190px]">Reference</TableHead>
-                  <TableHead className="w-[160px]">Movie</TableHead>
-                  <TableHead className="w-[180px]">Customer</TableHead>
-                  <TableHead className="w-[260px]">Seats</TableHead>
-                  <TableHead className="w-[100px]">Total</TableHead>
-                  <TableHead className="w-[120px]">Status</TableHead>
-                  <TableHead className="w-[190px]">Created</TableHead>
+                  <TableHead className="w-47.5">Reference</TableHead>
+                  <TableHead className="w-40">Movie</TableHead>
+                  <TableHead className="w-45">Customer</TableHead>
+                  <TableHead className="w-65">Seats</TableHead>
+                  <TableHead className="w-25">Total</TableHead>
+                  <TableHead className="w-30">Status</TableHead>
+                  <TableHead className="w-47.5">Created</TableHead>
                 </TableRow>
               </TableHeader>
 
