@@ -8,7 +8,9 @@ const sourceRoot = join(projectRoot, "src");
 const extensions = [".ts", ".tsx", ".mts", ".js", ".mjs"];
 
 function isProjectFile(filePath) {
-  return filePath.startsWith(projectRoot) && !filePath.includes("/node_modules/");
+  return (
+    filePath.startsWith(projectRoot) && !filePath.includes("/node_modules/")
+  );
 }
 
 function resolveExistingPath(candidatePath) {
@@ -60,10 +62,7 @@ registerHooks({
       }
     }
 
-    if (
-      specifier.startsWith(".") &&
-      context.parentURL?.startsWith("file://")
-    ) {
+    if (specifier.startsWith(".") && context.parentURL?.startsWith("file://")) {
       const parentPath = fileURLToPath(context.parentURL);
 
       if (!isProjectFile(parentPath)) {

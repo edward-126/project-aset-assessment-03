@@ -102,7 +102,9 @@ describe("ScreenRepository", () => {
 
   it("updates matching embedded seat states with array filters", async () => {
     const repository = new ScreenRepository();
-    const exec = vi.fn().mockResolvedValue({ matchedCount: 1, modifiedCount: 2 });
+    const exec = vi
+      .fn()
+      .mockResolvedValue({ matchedCount: 1, modifiedCount: 2 });
     mocks.updateOne.mockReturnValue({ exec });
 
     await repository.updateSeatStates(
