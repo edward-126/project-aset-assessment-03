@@ -18,6 +18,7 @@ function toScreen(document: ScreenDocument): Screen {
     totalColumns: document.totalColumns,
     preferredViewingZone: document.preferredViewingZone,
     seats: document.seats,
+    isActive: document.isActive,
     createdAt: toIsoString(document.createdAt),
     updatedAt: toIsoString(document.updatedAt),
   };

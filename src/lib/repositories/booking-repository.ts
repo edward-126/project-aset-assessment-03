@@ -12,7 +12,9 @@ type DocumentLike<T> = T & {
 };
 
 function unwrapDocument<T>(document: DocumentLike<T>): T {
-  return typeof document.toObject === "function" ? document.toObject() : document;
+  return typeof document.toObject === "function"
+    ? document.toObject()
+    : document;
 }
 
 function toIsoString(value: Date | string) {
@@ -22,12 +24,17 @@ function toIsoString(value: Date | string) {
 function toBooking(document: PersistedBooking): Booking {
   return {
     id: document.id,
+    showtimeId: document.showtimeId,
     screenId: document.screenId,
+    movieId: document.movieId,
+    movieTitle: document.movieTitle,
+    showtimeStartsAt: document.showtimeStartsAt,
     bookingReference: document.bookingReference,
     customerName: document.customerName,
     customerEmail: document.customerEmail,
     customerPhone: document.customerPhone,
     status: document.status,
+    allocationMode: document.allocationMode,
     seats: document.seats,
     holdExpiresAt: document.holdExpiresAt,
     totalCost: document.totalCost,
@@ -37,6 +44,42 @@ function toBooking(document: PersistedBooking): Booking {
 }
 
 export class BookingRepository {
+  async findAll(
+    filters: {
+      status?: Booking["status"];
+      movieId?: string;
+      screenId?: string;
+      showtimeId?: string;
+    } = {}
+  ): Promise<Booking[]> {
+    await connectToDatabase();
+
+    const query: Record<string, string> = {};
+
+    if (filters.status) {
+      query.status = filters.status;
+    }
+
+    if (filters.movieId) {
+      query.movieId = filters.movieId;
+    }
+
+    if (filters.screenId) {
+      query.screenId = filters.screenId;
+    }
+
+    if (filters.showtimeId) {
+      query.showtimeId = filters.showtimeId;
+    }
+
+    const bookings = await BookingModel.find(query)
+      .sort({ createdAt: -1 })
+      .lean<PersistedBooking[]>()
+      .exec();
+
+    return bookings.map(toBooking);
+  }
+
   async save(booking: Booking): Promise<Booking> {
     await connectToDatabase();
 
@@ -57,10 +100,7 @@ export class BookingRepository {
     return booking ? toBooking(booking) : null;
   }
 
-  async update(
-    bookingId: string,
-    patch: Partial<Booking>
-  ): Promise<Booking> {
+  async update(bookingId: string, patch: Partial<Booking>): Promise<Booking> {
     await connectToDatabase();
 
     const booking = await BookingModel.findOneAndUpdate(

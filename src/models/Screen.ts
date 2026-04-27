@@ -44,6 +44,7 @@ const screenSchema = new Schema<ScreenDocument>(
     totalColumns: { type: Number, required: true, min: 1 },
     preferredViewingZone: { type: preferredViewingZoneSchema, required: true },
     seats: { type: [seatSchema], required: true },
+    isActive: { type: Boolean, required: true, default: true, index: true },
   },
   {
     collection: "screens",
