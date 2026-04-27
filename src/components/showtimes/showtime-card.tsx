@@ -1,17 +1,27 @@
-import { ArrowRight, CalendarClock, Monitor } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, Armchair, Clock, Monitor } from "lucide-react";
 
-import { formatDateTime } from "@/components/booking/format";
+import { formatCurrency } from "@/components/booking/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import type { ShowtimeWithDetails } from "@/types/domain";
+
+function formatTime(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
 
 export function ShowtimeCard({ showtime }: { showtime: ShowtimeWithDetails }) {
   const unavailableSeats = showtime.seatStates.filter(
@@ -24,71 +34,59 @@ export function ShowtimeCard({ showtime }: { showtime: ShowtimeWithDetails }) {
   );
 
   return (
-    <Card className="border-border/60 hover:border-primary/30 group h-fit overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      <CardHeader className="space-y-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0 space-y-2">
-            <CardTitle className="line-clamp-1 text-xl font-semibold tracking-tight">
-              {showtime.movie.title}
-            </CardTitle>
+    <Card className="group h-fit overflow-hidden pt-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      <div className="relative">
+        {showtime.movie.posterUrl ? (
+          <Image
+            src={showtime.movie.posterUrl}
+            alt=""
+            width={"200"}
+            height={"200"}
+            className="h-56 w-full object-cover"
+          />
+        ) : null}
 
-            <p className="text-muted-foreground line-clamp-1 text-sm">
-              {showtime.movie.genre}
-            </p>
-          </div>
-
-          <Badge className="bg-primary/10 text-primary hover:bg-primary/10 shrink-0 rounded-full">
-            {availableSeats} seats
-          </Badge>
+        <div className="bg-background text-primary absolute right-2 top-2 flex items-center gap-1 rounded-lg px-1.5 pb-0.5 pt-1 text-sm font-medium">
+          <Clock
+            data-icon="inline-start"
+            aria-hidden="true"
+            className="-mt-0.5 size-3.5"
+          />
+          {formatTime(showtime.startsAt)}
         </div>
+      </div>
 
-        <div className="bg-muted/50 grid gap-3 rounded-lg border p-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-background border-border flex size-10 shrink-0 items-center justify-center rounded-full border">
-              <CalendarClock
-                className="text-primary size-4"
-                aria-hidden="true"
-              />
-            </div>
-
-            <div className="min-w-0">
-              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
-                Showtime
-              </p>
-              <p className="truncate text-sm font-semibold">
-                {formatDateTime(showtime.startsAt)}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="bg-background border-border flex size-10 shrink-0 items-center justify-center rounded-full border">
-              <Monitor className="text-primary size-4" aria-hidden="true" />
-            </div>
-
-            <div className="min-w-0">
-              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
-                Screen
-              </p>
-              <p className="truncate text-sm font-semibold">
-                {showtime.screen.name}
-              </p>
-            </div>
-          </div>
-        </div>
+      <CardHeader className="gap-2">
+        <CardTitle className="text-xl font-semibold tracking-normal">
+          {showtime.movie.title}
+        </CardTitle>
+        <CardDescription className="line-clamp-2">
+          {showtime.movie.synopsis}
+        </CardDescription>
+        <CardAction>
+          {showtime.movie.rating ? (
+            <Badge variant="secondary">{showtime.movie.rating}</Badge>
+          ) : null}
+        </CardAction>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        <p className="text-muted-foreground line-clamp-2 text-sm leading-6">
-          {showtime.movie.synopsis}
-        </p>
+      <CardContent className="flex flex-wrap gap-2 pt-2">
+        <Badge variant="outline">
+          <Monitor data-icon="inline-start" aria-hidden="true" />
+          {showtime.screen.name}
+        </Badge>
+        <Badge variant="outline">
+          <Armchair data-icon="inline-start" aria-hidden="true" />
+          {availableSeats} seats
+        </Badge>
+        <Badge variant="outline">{formatCurrency(showtime.basePrice)}</Badge>
       </CardContent>
 
-      <CardFooter>
+      <CardFooter className="">
         <Button asChild>
-          <Link href={`/showtimes/${showtime.id}`}>
+          <Link href={`/showtimes/${showtime.id}`} className="">
             Choose seats
-            <ArrowRight className="" />
+            <ArrowRight data-icon="inline-end" />
           </Link>
         </Button>
       </CardFooter>

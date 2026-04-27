@@ -8,8 +8,11 @@ const sourceRoot = join(projectRoot, "src");
 const extensions = [".ts", ".tsx", ".mts", ".js", ".mjs"];
 
 function isProjectFile(filePath) {
+  const normalizedPath = filePath.replaceAll("\\", "/");
+
   return (
-    filePath.startsWith(projectRoot) && !filePath.includes("/node_modules/")
+    filePath.startsWith(projectRoot) &&
+    !normalizedPath.includes("/node_modules/")
   );
 }
 

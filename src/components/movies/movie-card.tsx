@@ -16,7 +16,7 @@ import type { Movie } from "@/types/domain";
 
 export function MovieCard({ movie }: { movie: Movie }) {
   return (
-    <Card className="group/card border-border/60 hover:border-primary/30 group h-fit overflow-hidden pt-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <Card className="group/card group h-fit overflow-hidden pt-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       {movie.posterUrl ? (
         <div className="aspect-4/3 relative overflow-hidden">
           <Image
