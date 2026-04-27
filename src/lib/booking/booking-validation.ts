@@ -25,11 +25,27 @@ export function validateGroupSize(groupSize: number) {
 }
 
 export function validateCreateHeldBookingInput(input: CreateHeldBookingInput) {
-  assertPresent(
-    input.screenId,
-    "MISSING_SCREEN_ID",
-    "A screen must be selected before creating a booking."
-  );
+  if (!input.showtimeId && !input.screenId) {
+    throw new BookingServiceError(
+      "MISSING_SHOWTIME_ID",
+      "A showtime must be selected before creating a booking."
+    );
+  }
+
+  if (input.showtimeId) {
+    assertPresent(
+      input.showtimeId,
+      "MISSING_SHOWTIME_ID",
+      "A showtime must be selected before creating a booking."
+    );
+  } else {
+    assertPresent(
+      input.screenId ?? "",
+      "MISSING_SCREEN_ID",
+      "A screen must be selected before creating a booking."
+    );
+  }
+
   assertPresent(
     input.customerName,
     "MISSING_CUSTOMER_NAME",

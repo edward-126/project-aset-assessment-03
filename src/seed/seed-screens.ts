@@ -1,6 +1,7 @@
 import { connectToDatabase } from "@/lib/db/mongodb";
 import { ScreenModel } from "@/models/Screen";
 import { seedScreens } from "@/seed/screens";
+export { seedApplicationData } from "@/seed/seed-data";
 
 export async function seedScreenCollection() {
   await connectToDatabase();

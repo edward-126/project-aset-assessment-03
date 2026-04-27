@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: APP_NAME,
   description: APP_DESCRIPTION,
   keywords: [
-    "CineSeat Planner",
+    "TR SeatFlow",
     "Next.js",
     "TypeScript",
     "MongoDB",

@@ -1,5 +1,8 @@
 import { randomUUID } from "crypto";
-import { AllocationService } from "@/lib/allocation";
+import {
+  AllocationService,
+  ManualSeatSelectionService,
+} from "@/lib/allocation";
 import { BookingServiceError } from "@/lib/booking/booking-errors";
 import type {
   AllocationServicePort,
@@ -9,6 +12,7 @@ import type {
   PaymentMockServicePort,
   PricingServicePort,
   ScreenRepositoryPort,
+  ShowtimeRepositoryPort,
 } from "@/lib/booking/booking-types";
 import {
   validateCreateHeldBookingInput,
@@ -20,14 +24,25 @@ import { PricingService } from "@/lib/booking/pricing-service";
 import { HOLD_DURATION_MINUTES } from "@/lib/constants";
 import { bookingRepository } from "@/lib/repositories/booking-repository";
 import { screenRepository } from "@/lib/repositories/screen-repository";
-import type { Booking, BookingSeat, Screen, Seat } from "@/types/domain";
+import { showtimeRepository } from "@/lib/repositories/showtime-repository";
+import type {
+  AllocationMode,
+  Booking,
+  BookingSeat,
+  Movie,
+  Screen,
+  Seat,
+  Showtime,
+} from "@/types/domain";
 
 type IdGenerator = () => string;
 
 type BookingServiceDependencies = {
   bookings?: BookingRepositoryPort;
   screens?: ScreenRepositoryPort;
+  showtimes?: ShowtimeRepositoryPort;
   allocation?: AllocationServicePort;
+  manualSelection?: ManualSeatSelectionService;
   holdService?: HoldService;
   pricingService?: PricingServicePort & Pick<PricingService, "getSeatPrice">;
   paymentService?: PaymentMockServicePort;
@@ -39,7 +54,9 @@ type BookingServiceDependencies = {
 export class BookingService {
   private readonly bookings: BookingRepositoryPort;
   private readonly screens: ScreenRepositoryPort;
+  private readonly showtimes: ShowtimeRepositoryPort;
   private readonly allocation: AllocationServicePort;
+  private readonly manualSelection: ManualSeatSelectionService;
   private readonly holdService: HoldService;
   private readonly pricingService: PricingServicePort &
     Pick<PricingService, "getSeatPrice">;
@@ -51,21 +68,26 @@ export class BookingService {
   constructor({
     bookings = bookingRepository,
     screens = screenRepository,
+    showtimes = showtimeRepository,
     allocation = new AllocationService(),
+    manualSelection = new ManualSeatSelectionService(),
     holdService,
     pricingService = new PricingService(),
     paymentService = new PaymentMockService(),
     idGenerator = randomUUID,
     referenceGenerator = () =>
-      `CSP-${Date.now().toString(36).toUpperCase()}-${randomUUID()
+      `TRS-${Date.now().toString(36).toUpperCase()}-${randomUUID()
         .slice(0, 8)
         .toUpperCase()}`,
     nowProvider = () => new Date(),
   }: BookingServiceDependencies = {}) {
     this.bookings = bookings;
     this.screens = screens;
+    this.showtimes = showtimes;
     this.allocation = allocation;
-    this.holdService = holdService ?? new HoldService(bookings, screens);
+    this.manualSelection = manualSelection;
+    this.holdService =
+      holdService ?? new HoldService(bookings, screens, undefined, showtimes);
     this.pricingService = pricingService;
     this.paymentService = paymentService;
     this.idGenerator = idGenerator;
@@ -77,32 +99,46 @@ export class BookingService {
     validateCreateHeldBookingInput(input);
     await this.holdService.expireHeldBookings();
 
-    const screen = await this.screens.findScreenWithSeats(input.screenId);
+    const allocationSource = await this.getBookingAllocationSource(input);
+    const { screen } = allocationSource;
 
     if (!screen) {
       throw new BookingServiceError(
         "SCREEN_NOT_FOUND",
-        `Screen ${input.screenId} was not found.`
+        "The selected screen was not found."
       );
     }
 
-    const allocation = this.allocation.allocate({
-      screen,
-      groupSize: input.groupSize,
-    });
+    const allocationMode: AllocationMode = input.allocationMode ?? "AUTO";
+    const selectedSeats =
+      allocationMode === "MANUAL"
+        ? this.manualSelection.validateSelection({
+            screen,
+            groupSize: input.groupSize,
+            seatIds: input.seatIds ?? [],
+          }).seats
+        : this.allocation.allocate({
+            screen,
+            groupSize: input.groupSize,
+          }).seats;
     const bookingId = this.idGenerator();
-    const seats = this.toBookingSeats(allocation.seats);
+    const seats = this.toBookingSeats(selectedSeats);
     const totalCost = this.pricingService.calculateTotal(seats).total;
     const nowIso = this.nowProvider().toISOString();
 
     const booking: Booking = {
       id: bookingId,
+      showtimeId: allocationSource.showtime?.id,
       screenId: screen.id,
+      movieId: allocationSource.movie?.id,
+      movieTitle: allocationSource.movie?.title,
+      showtimeStartsAt: allocationSource.showtime?.startsAt,
       bookingReference: this.referenceGenerator(),
       customerName: input.customerName.trim(),
       customerEmail: input.customerEmail.trim(),
       customerPhone: input.customerPhone?.trim(),
       status: "HELD",
+      allocationMode,
       seats,
       holdExpiresAt: this.holdService
         .createHoldExpiry(HOLD_DURATION_MINUTES)
@@ -112,8 +148,8 @@ export class BookingService {
       updatedAt: nowIso,
     };
 
-    await this.screens.updateSeatStates(
-      screen.id,
+    await this.updateBookingSeatStates(
+      booking,
       seats.map((seat) => seat.seatId),
       {
         status: "HELD",
@@ -140,8 +176,8 @@ export class BookingService {
       );
     }
 
-    await this.screens.updateSeatStates(
-      booking.screenId,
+    await this.updateBookingSeatStates(
+      booking,
       booking.seats.map((seat) => seat.seatId),
       {
         status: "BOOKED",
@@ -187,7 +223,9 @@ export class BookingService {
     const booking = await this.requireBooking(input.bookingId);
     await this.assertHeldAndActive(booking);
 
-    const screen = await this.screens.findScreenWithSeats(booking.screenId);
+    const allocationSource =
+      await this.getExistingBookingAllocationSource(booking);
+    const { screen } = allocationSource;
 
     if (!screen) {
       throw new BookingServiceError(
@@ -204,16 +242,16 @@ export class BookingService {
     const seats = this.toBookingSeats(allocation.seats);
     const totalCost = this.pricingService.calculateTotal(seats).total;
 
-    await this.screens.updateSeatStates(
-      booking.screenId,
+    await this.updateBookingSeatStates(
+      booking,
       booking.seats.map((seat) => seat.seatId),
       {
         status: "AVAILABLE",
         heldByBookingId: null,
       }
     );
-    await this.screens.updateSeatStates(
-      booking.screenId,
+    await this.updateBookingSeatStates(
+      booking,
       seats.map((seat) => seat.seatId),
       {
         status: "HELD",
@@ -265,8 +303,8 @@ export class BookingService {
   }
 
   private async expireBooking(booking: Booking) {
-    await this.screens.updateSeatStates(
-      booking.screenId,
+    await this.updateBookingSeatStates(
+      booking,
       booking.seats.map((seat) => seat.seatId),
       {
         status: "AVAILABLE",
@@ -304,6 +342,74 @@ export class BookingService {
           : seat
       ),
     };
+  }
+
+  private async getBookingAllocationSource(input: CreateHeldBookingInput) {
+    if (input.showtimeId) {
+      const seatMap = await this.showtimes.findShowtimeWithSeatMap(
+        input.showtimeId
+      );
+
+      if (!seatMap) {
+        throw new BookingServiceError(
+          "SHOWTIME_NOT_FOUND",
+          `Showtime ${input.showtimeId} was not found.`
+        );
+      }
+
+      return seatMap;
+    }
+
+    const screen = await this.screens.findScreenWithSeats(input.screenId ?? "");
+
+    return {
+      screen,
+      movie: undefined,
+      showtime: undefined,
+    };
+  }
+
+  private async getExistingBookingAllocationSource(booking: Booking) {
+    if (booking.showtimeId) {
+      const seatMap = await this.showtimes.findShowtimeWithSeatMap(
+        booking.showtimeId
+      );
+
+      if (!seatMap) {
+        throw new BookingServiceError(
+          "SHOWTIME_NOT_FOUND",
+          `Showtime ${booking.showtimeId} was not found.`
+        );
+      }
+
+      return seatMap;
+    }
+
+    return {
+      screen: await this.screens.findScreenWithSeats(booking.screenId),
+      movie: undefined as Movie | undefined,
+      showtime: undefined as Showtime | undefined,
+    };
+  }
+
+  private async updateBookingSeatStates(
+    booking: Pick<Booking, "showtimeId" | "screenId">,
+    seatIds: string[],
+    updater: {
+      status: "AVAILABLE" | "HELD" | "BOOKED";
+      heldByBookingId: string | null;
+    }
+  ) {
+    if (booking.showtimeId) {
+      await this.showtimes.updateSeatStates(
+        booking.showtimeId,
+        seatIds,
+        updater
+      );
+      return;
+    }
+
+    await this.screens.updateSeatStates(booking.screenId, seatIds, updater);
   }
 }
 

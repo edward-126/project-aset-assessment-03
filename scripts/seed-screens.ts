@@ -1,19 +1,19 @@
 import nextEnv from "@next/env";
 import mongoose from "mongoose";
-import { seedScreenCollection } from "../src/seed/seed-screens";
+import { seedApplicationData } from "../src/seed/seed-data";
 
 const { loadEnvConfig } = nextEnv;
 
 loadEnvConfig(process.cwd());
 
 try {
-  const result = await seedScreenCollection();
+  const result = await seedApplicationData();
 
   console.log(
-    `Seeded ${result.insertedScreens} screens: ${result.screenIds.join(", ")}`
+    `Seeded ${result.insertedMovies} movies, ${result.insertedScreens} screens, and ${result.insertedShowtimes} showtimes.`
   );
 } catch (error) {
-  console.error("Failed to seed screens.");
+  console.error("Failed to seed TR SeatFlow data.");
 
   if (error instanceof Error) {
     console.error(error.message);

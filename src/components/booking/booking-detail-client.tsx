@@ -20,12 +20,17 @@ import { EditHeldBookingForm } from "@/components/booking/edit-held-booking-form
 import { HoldCountdown } from "@/components/booking/hold-countdown";
 import { PricingSummary } from "@/components/booking/pricing-summary";
 import { fetchJson } from "@/lib/api/client";
-import type { BookingResponse, ScreenResponse } from "@/types/api";
-import type { Booking, Screen } from "@/types/domain";
+import type {
+  BookingResponse,
+  ScreenResponse,
+  ShowtimeResponse,
+} from "@/types/api";
+import type { Booking, Screen, ShowtimeWithDetails } from "@/types/domain";
 
 export function BookingDetailClient({ bookingId }: { bookingId: string }) {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [screen, setScreen] = useState<Screen | null>(null);
+  const [showtime, setShowtime] = useState<ShowtimeWithDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -40,13 +45,26 @@ export function BookingDetailClient({ bookingId }: { bookingId: string }) {
       setBooking(bookingResponse.booking);
       setError(null);
 
-      try {
-        const screenResponse = await fetchJson<ScreenResponse>(
-          `/api/screens/${bookingResponse.booking.screenId}`
-        );
-        setScreen(screenResponse.screen);
-      } catch {
-        setScreen(null);
+      if (bookingResponse.booking.showtimeId) {
+        try {
+          const showtimeResponse = await fetchJson<ShowtimeResponse>(
+            `/api/showtimes/${bookingResponse.booking.showtimeId}`
+          );
+          setShowtime(showtimeResponse.showtime);
+          setScreen(showtimeResponse.showtime.screen);
+        } catch {
+          setShowtime(null);
+          setScreen(null);
+        }
+      } else {
+        try {
+          const screenResponse = await fetchJson<ScreenResponse>(
+            `/api/screens/${bookingResponse.booking.screenId}`
+          );
+          setScreen(screenResponse.screen);
+        } catch {
+          setScreen(null);
+        }
       }
     } catch (requestError) {
       setError(
@@ -110,9 +128,15 @@ export function BookingDetailClient({ bookingId }: { bookingId: string }) {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
         <Button asChild variant="ghost" className="w-fit">
-          <Link href={`/screens/${booking.screenId}`}>
+          <Link
+            href={
+              booking.showtimeId
+                ? `/showtimes/${booking.showtimeId}`
+                : `/screens/${booking.screenId}`
+            }
+          >
             <ArrowLeft data-icon="inline-start" aria-hidden="true" />
-            Screen
+            {booking.showtimeId ? "Showtime" : "Screen"}
           </Link>
         </Button>
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -145,7 +169,14 @@ export function BookingDetailClient({ bookingId }: { bookingId: string }) {
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="flex flex-col gap-4">
-          <BookingSummary booking={booking} screenName={screen?.name} />
+          <BookingSummary
+            booking={booking}
+            screenName={
+              showtime
+                ? `${showtime.movie.title}, ${showtime.screen.name}`
+                : screen?.name
+            }
+          />
           <PricingSummary seats={booking.seats} totalCost={booking.totalCost} />
         </div>
 

@@ -6,9 +6,11 @@ import type { Screen } from "@/types/domain";
 export function SeatMap({
   screen,
   selectedSeatIds = new Set<string>(),
+  onSeatToggle,
 }: {
   screen: Screen;
   selectedSeatIds?: ReadonlySet<string>;
+  onSeatToggle?: (seatId: string) => void;
 }) {
   const rows = Array.from(
     screen.seats
@@ -41,7 +43,11 @@ export function SeatMap({
               </div>
               <div className="flex gap-2">
                 {row.seats.map((seat) => (
-                  <SeatCell key={seat.id} seat={seat} />
+                  <SeatCell
+                    key={seat.id}
+                    seat={seat}
+                    onSeatClick={onSeatToggle}
+                  />
                 ))}
               </div>
               <div aria-hidden="true" className="size-9" />

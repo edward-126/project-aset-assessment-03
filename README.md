@@ -1,83 +1,52 @@
-# project-aset-assessment-03
+# TR SeatFlow
 
-A reusable Next.js application created with **Template Next**.
+TR SeatFlow is a cinema booking application built with Next.js, TypeScript,
+MongoDB, and shadcn/ui. It supports movie browsing, showtime seat maps,
+automatic group allocation, manual seat selection, temporary holds, booking
+confirmation and cancellation, and a lightweight admin area.
 
 ## Tech Stack
 
-- **Next.js 16** - React framework with App Router
-- **TypeScript** - Type-safe JavaScript
-- **React Compiler** - Enabled in the scaffold
-- **Tailwind CSS** - Utility-first CSS framework
-- **Turbopack** - Fast local development bundler
-- **Shadcn/ui preset `b1YmqvjRA`** - Pre-configured component baseline
-- **AGENTS.md** - Default guidance for coding agents working in the app
-- **next-themes** - Theme switching support
-- **Prettier** - Code formatting with Tailwind plugin
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- MongoDB with Mongoose
+- Tailwind CSS
+- shadcn/ui
+- Vitest
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js 20.9 or later
-- npm
-
-### Installation
-
-1. Install dependencies:
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Run the development server:
-
-```bash
-npm run dev
-```
-
-3. Seed the demo screen data:
+Seed the application data:
 
 ```bash
 npm run seed:screens
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Project Structure
-
-```
-project-aset-assessment-03/
-├── src/
-│   ├── app/
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── components/
-│   │   ├── theme-provider.tsx
-│   │   └── ui/
-│   └── lib/
-├── public/
-├── AGENTS.md
-├── .prettierrc
-├── .vscode/
-│   └── settings.json
-├── components.json
-├── next.config.ts
-├── postcss.config.mjs
-├── eslint.config.mjs
-├── tsconfig.json
-└── package.json
-```
-
-## Adding Components
-
-This project uses Shadcn/ui. Add new components:
+Run the development server:
 
 ```bash
-npx shadcn@latest add button
-npx shadcn@latest add card
-npx shadcn@latest add input
+npm run dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Main Routes
+
+- `/` - TR SeatFlow landing page with featured showtimes
+- `/movies` - active movie list
+- `/showtimes` - active showtime list
+- `/showtimes/[showtimeId]` - showtime seat map and booking request
+- `/booking/[bookingId]` - booking summary and lifecycle actions
+- `/admin/login` - admin gate
+- `/admin` - admin dashboard
+- `/admin/movies`, `/admin/screens`, `/admin/showtimes`, `/admin/bookings`
 
 ## Available Scripts
 
@@ -85,14 +54,14 @@ npx shadcn@latest add input
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Lint code with ESLint
-- `npm run format` - Format code with Prettier
-- `npm run format:check` - Check formatting without writing changes
-- `npm run seed:screens` - Seed the demo cinema screens from `src/seed/screens.ts`
+- `npm run test:run` - Run tests once
+- `npm run seed:screens` - Seed movies, screens, and showtimes
 
-## Contributing
+## Admin Access
 
-Created with [Template Next](https://www.npmjs.com/package/@edward-hyde/template-next)
+Default local credentials are:
 
-## License
+- Username: `admin`
+- Password: `admin-123`
 
-MIT License
+Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` to override these values.

@@ -2,9 +2,11 @@ import { BookingServiceError } from "@/lib/booking/booking-errors";
 import type {
   BookingRepositoryPort,
   ScreenRepositoryPort,
+  ShowtimeRepositoryPort,
 } from "@/lib/booking/booking-types";
 import { bookingRepository } from "@/lib/repositories/booking-repository";
 import { screenRepository } from "@/lib/repositories/screen-repository";
+import { showtimeRepository } from "@/lib/repositories/showtime-repository";
 import type { Booking } from "@/types/domain";
 
 type NowProvider = () => Date;
@@ -13,7 +15,8 @@ export class HoldService {
   constructor(
     private readonly bookings: BookingRepositoryPort = bookingRepository,
     private readonly screens: ScreenRepositoryPort = screenRepository,
-    private readonly nowProvider: NowProvider = () => new Date()
+    private readonly nowProvider: NowProvider = () => new Date(),
+    private readonly showtimes: ShowtimeRepositoryPort = showtimeRepository
   ) {}
 
   createHoldExpiry(minutes: number) {
@@ -64,8 +67,11 @@ export class HoldService {
   }
 
   private async releaseSeatsForBooking(booking: Booking) {
-    await this.screens.updateSeatStates(
-      booking.screenId,
+    const repository = booking.showtimeId ? this.showtimes : this.screens;
+    const allocationSourceId = booking.showtimeId ?? booking.screenId;
+
+    await repository.updateSeatStates(
+      allocationSourceId,
       booking.seats.map((seat) => seat.seatId),
       {
         status: "AVAILABLE",

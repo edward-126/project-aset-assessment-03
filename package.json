@@ -1,5 +1,5 @@
 {
-  "name": "project-aset-assessment-03",
+  "name": "tr-seatflow",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "seed:screens": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/register-ts-paths.mjs --experimental-strip-types scripts/seed-screens.ts",
+    "seed:movies": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/register-ts-paths.mjs --experimental-strip-types scripts/seed-movies.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
