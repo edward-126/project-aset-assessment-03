@@ -51,13 +51,16 @@ export function BookingSummary({
             <dd className="font-medium">{booking.customerName}</dd>
           </div>
 
+          {booking.movieTitle ? (
+            <div className="flex flex-col gap-1">
+              <dt className="text-muted-foreground">Movie</dt>
+              <dd className="font-medium">{booking.movieTitle}</dd>
+            </div>
+          ) : null}
+
           <div className="flex flex-col gap-1">
-            <dt className="text-muted-foreground">Session</dt>
-            <dd className="font-medium">
-              {booking.movieTitle
-                ? `${screenName ?? booking.screenId}`
-                : (screenName ?? booking.screenId)}
-            </dd>
+            <dt className="text-muted-foreground">Screen</dt>
+            <dd className="font-medium">{screenName ?? booking.screenId}</dd>
           </div>
 
           {booking.showtimeStartsAt ? (

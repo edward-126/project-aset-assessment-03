@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { hasAdminSession } from "@/lib/admin/session";
 import { bookingRepository } from "@/lib/repositories/booking-repository";
+import { showtimeRepository } from "@/lib/repositories/showtime-repository";
 import type { BookingStatus } from "@/types/domain";
 import {
   Table,
@@ -45,7 +46,13 @@ export default async function AdminBookingsPage({
   }
 
   const filters = await searchParams;
-  const bookings = await bookingRepository.findAll(filters);
+  const [bookings, showtimes] = await Promise.all([
+    bookingRepository.findAll(filters),
+    showtimeRepository.findAll(),
+  ]);
+  const showtimeMovieTitles = new Map(
+    showtimes.map((showtime) => [showtime.id, showtime.movie.title])
+  );
 
   return (
     <AdminShell>
@@ -77,7 +84,10 @@ export default async function AdminBookingsPage({
                     </TableCell>
 
                     <TableCell className="truncate">
-                      {booking.movieTitle ??
+                      {(booking.showtimeId
+                        ? showtimeMovieTitles.get(booking.showtimeId)
+                        : undefined) ??
+                        booking.movieTitle ??
                         booking.movieId ??
                         "Screen booking"}
                     </TableCell>

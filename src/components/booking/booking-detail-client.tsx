@@ -171,11 +171,7 @@ export function BookingDetailClient({ bookingId }: { bookingId: string }) {
         <div className="flex flex-col gap-4">
           <BookingSummary
             booking={booking}
-            screenName={
-              showtime
-                ? `${showtime.movie.title}, ${showtime.screen.name}`
-                : screen?.name
-            }
+            screenName={showtime ? showtime.screen.name : screen?.name}
           />
           <PricingSummary seats={booking.seats} totalCost={booking.totalCost} />
         </div>
