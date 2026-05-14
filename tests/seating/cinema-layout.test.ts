@@ -40,10 +40,10 @@ describe("assessment cinema layout", () => {
     ]);
     expect(getCinemaRowColumns("I")).toEqual([
       5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-      24, 25,
+      24, 25, 26, 27, 28,
     ]);
     expect(getCinemaRowColumns("O")).toEqual([
-      5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24,
+      5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24,
       25,
     ]);
   });
@@ -65,16 +65,64 @@ describe("assessment cinema layout", () => {
       ],
       [25, 26, 27, 28],
     ]);
+    expect(getCinemaRowBlocks("G").map((block) => block.columns)).toEqual([
+      [3, 4, 5, 6],
+      [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+      [25, 26, 27, 28],
+    ]);
+    expect(getCinemaRowBlocks("H").map((block) => block.columns)).toEqual([
+      [4, 5, 6, 7],
+      [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+      [25, 26, 27, 28],
+    ]);
+    expect(getCinemaRowBlocks("I").map((block) => block.columns)).toEqual([
+      [5, 6, 7, 8],
+      [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+      [25, 26, 27, 28],
+    ]);
+    expect(getCinemaRowBlocks("J").map((block) => block.columns)).toEqual([
+      [6, 7, 8, 9],
+      [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+      [25, 26, 27, 28],
+    ]);
+    expect(getCinemaRowBlocks("K").map((block) => block.columns)).toEqual([
+      [7, 8, 9, 10],
+      [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+      [25, 26, 27, 28],
+    ]);
+    expect(getCinemaRowBlocks("L").map((block) => block.columns)).toEqual([
+      [8, 9, 10, 11],
+      [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+      [25, 26, 27, 28],
+    ]);
+    expect(getCinemaRowBlocks("M").map((block) => block.columns)).toEqual([
+      [9, 10, 11, 12],
+      [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+      [25, 26, 27, 28],
+    ]);
     expect(getCinemaRowBlocks("N").map((block) => block.columns)).toEqual([
       [5, 6, 7, 8],
-      [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+      [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
       [21, 22, 23, 24],
     ]);
     expect(getCinemaRowBlocks("O").map((block) => block.columns)).toEqual([
       [5, 6, 7, 8],
-      [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+      [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
       [22, 23, 24, 25],
     ]);
+  });
+
+  it("uses the requested lower centre block sizes", () => {
+    expect(centreBlockSize("F")).toBe(19);
+    expect(centreBlockSize("G")).toBe(18);
+    expect(centreBlockSize("H")).toBe(17);
+    expect(centreBlockSize("I")).toBe(16);
+    expect(centreBlockSize("J")).toBe(15);
+    expect(centreBlockSize("K")).toBe(14);
+    expect(centreBlockSize("L")).toBe(13);
+    expect(centreBlockSize("M")).toBe(12);
+    expect(centreBlockSize("N")).toBe(11);
+    expect(centreBlockSize("O")).toBe(10);
   });
 
   it("marks aisle boundaries by physical block instead of numeric adjacency", () => {
@@ -125,8 +173,19 @@ describe("assessment cinema layout", () => {
     const zoneBySeatId = new Map(seats.map((seat) => [seat.id, seat.zone]));
 
     expect(zoneBySeatId.get("A1")).toBe("standard");
-    expect(zoneBySeatId.get("E12")).toBe("vip");
-    expect(zoneBySeatId.get("I15")).toBe("vip");
+    expect(vipSeatIds(seatMapById(seats), "E")).toEqual(expandRange("E", 9, 20));
+    expect(vipSeatIds(seatMapById(seats), "F")).toEqual(expandRange("F", 9, 21));
+    expect(vipSeatIds(seatMapById(seats), "G")).toEqual(expandRange("G", 9, 22));
+    expect(vipSeatIds(seatMapById(seats), "H")).toEqual(expandRange("H", 9, 23));
+    expect(zoneBySeatId.get("F8")).toBe("standard");
+    expect(zoneBySeatId.get("G8")).toBe("standard");
+    expect(zoneBySeatId.get("H8")).toBe("standard");
+    expect(zoneBySeatId.get("G21")).toBe("vip");
+    expect(zoneBySeatId.get("G22")).toBe("vip");
+    expect(zoneBySeatId.get("H21")).toBe("vip");
+    expect(zoneBySeatId.get("H22")).toBe("vip");
+    expect(zoneBySeatId.get("H23")).toBe("vip");
+    expect(zoneBySeatId.get("I15")).toBe("standard");
     expect(zoneBySeatId.get("J12")).toBe("standard");
     expect(getAccessibleSeatIds()).toEqual([
       "N5",
@@ -150,4 +209,27 @@ function findSeat(seatMap: SeatMap, seatId: string): Seat {
   }
 
   return seat;
+}
+
+function seatMapById(seats: readonly Seat[]) {
+  return new Map(seats.map((seat) => [seat.id, seat]));
+}
+
+function vipSeatIds(seatsById: ReadonlyMap<string, Seat>, row: string) {
+  return [...seatsById.values()]
+    .filter((seat) => seat.row === row && seat.zone === "vip")
+    .map((seat) => seat.id);
+}
+
+function expandRange(row: string, start: number, end: number) {
+  return Array.from(
+    { length: end - start + 1 },
+    (_, index) => `${row}${start + index}`
+  );
+}
+
+function centreBlockSize(row: Parameters<typeof getCinemaRowBlocks>[0]) {
+  const [, centreBlock] = getCinemaRowBlocks(row);
+
+  return centreBlock.columns.length;
 }

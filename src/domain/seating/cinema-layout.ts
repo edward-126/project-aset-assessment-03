@@ -58,52 +58,56 @@ const ROW_BLOCKS: Record<CinemaRowLabel, readonly SeatColumnRange[]> = {
   G: [
     [3, 6],
     [7, 24],
-    [25, 27],
+    [25, 28],
   ],
   H: [
     [4, 7],
-    [8, 23],
-    [24, 26],
+    [8, 24],
+    [25, 28],
   ],
   I: [
     [5, 8],
-    [9, 22],
-    [23, 25],
+    [9, 24],
+    [25, 28],
   ],
   J: [
     [6, 9],
-    [10, 22],
-    [23, 25],
+    [10, 24],
+    [25, 28],
   ],
   K: [
-    [6, 10],
-    [11, 21],
-    [22, 25],
+    [7, 10],
+    [11, 24],
+    [25, 28],
   ],
   L: [
-    [7, 11],
-    [12, 20],
-    [21, 25],
+    [8, 11],
+    [12, 24],
+    [25, 28],
   ],
   M: [
-    [8, 12],
-    [13, 20],
-    [21, 24],
+    [9, 12],
+    [13, 24],
+    [25, 28],
   ],
   N: [
     [5, 8],
-    [9, 20],
+    [10, 20],
     [21, 24],
   ],
   O: [
     [5, 8],
-    [10, 20],
+    [11, 20],
     [22, 25],
   ],
 };
 
-const VIP_ROWS = new Set<CinemaRowLabel>(["E", "F", "G", "H", "I"]);
-const VIP_COLUMNS = new Set([12, 13, 14, 15]);
+const VIP_SEAT_RANGES: Partial<Record<CinemaRowLabel, SeatColumnRange>> = {
+  E: [9, 20],
+  F: [9, 21],
+  G: [9, 22],
+  H: [9, 23],
+};
 const ACCESSIBLE_SEATS = new Set(["N5", "N6", "O5", "O6", "O19", "O20"]);
 
 export function createAssessmentCinemaSeatMap(): SeatMap {
@@ -166,7 +170,9 @@ function getSeatZone(
     return "accessible";
   }
 
-  if (VIP_ROWS.has(row) && VIP_COLUMNS.has(column)) {
+  const vipRange = VIP_SEAT_RANGES[row];
+
+  if (vipRange && column >= vipRange[0] && column <= vipRange[1]) {
     return "vip";
   }
 

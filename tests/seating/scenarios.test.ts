@@ -44,15 +44,24 @@ describe("assessment seating scenarios", () => {
     const nearlyFull = createScenarioSeatMap("nearlyFull");
 
     expect(findSeat(halfFull, "A5").state).toBe("booked");
-    expect(findSeat(halfFull, "D22").state).toBe("held");
-    expect(findSeat(halfFull, "G24").state).toBe("held");
+    expect(findSeat(halfFull, "D22").state).toBe("booked");
+    expect(findSeat(halfFull, "G24").state).toBe("booked");
 
     expect(findSeat(nearlyFull, "A1").state).toBe("booked");
-    expect(findSeat(nearlyFull, "J6").state).toBe("held");
+    expect(findSeat(nearlyFull, "J6").state).toBe("booked");
     expect(findSeat(nearlyFull, "B13").state).toBe("available");
     expect(seatsWithState(nearlyFull, "booked").length).toBeGreaterThan(
       seatsWithState(halfFull, "booked").length
     );
+  });
+
+  it("does not use held or unavailable states in assessment demo scenarios", () => {
+    for (const scenarioId of SCENARIO_IDS) {
+      const seatMap = createScenarioSeatMap(scenarioId);
+
+      expect(seatsWithState(seatMap, "held")).toEqual([]);
+      expect(seatsWithState(seatMap, "unavailable")).toEqual([]);
+    }
   });
 
   it("keeps accessibility seats only in rows N and O as adjacent pairs", () => {
