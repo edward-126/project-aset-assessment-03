@@ -236,9 +236,9 @@ export function SeatingDemoClient() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-lg">
+        <Card className="rounded-lg gap-6">
           <CardHeader>
-            <CardTitle>Assessment Cinema Layout</CardTitle>
+            <CardTitle>Cinema Layout</CardTitle>
             <CardDescription>
               {scenario.name}: {scenario.purpose}
             </CardDescription>
@@ -279,10 +279,6 @@ export function SeatingDemoClient() {
 function SeatGrid({ seatMap }: { seatMap: SeatMap }) {
   return (
     <div className="flex flex-col gap-5">
-      <div className="bg-muted text-muted-foreground border-border rounded-md border px-4 py-2 text-center text-xs font-medium uppercase tracking-normal">
-        Screen
-      </div>
-
       <div className="overflow-x-auto pb-2">
         <div className="flex min-w-max flex-col items-center gap-2">
           {seatMap.rows.map((row) => (
@@ -304,6 +300,10 @@ function SeatGrid({ seatMap }: { seatMap: SeatMap }) {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="bg-muted text-muted-foreground border-border rounded-md border px-4 py-2 text-center text-xs font-medium uppercase tracking-normal">
+        Screen
       </div>
 
       <SeatLegend />
